@@ -1,0 +1,8 @@
+{
+  "name": "embed-sdk-js",
+  "version": "1.0.0",
+  "description": "A client side SDK for integrating Cogsworth's Embed Widget",
+  "main": "index.js",
+  "author": "Cogsworth <dev@cogsworth.com>",
+  "license": "MIT"
+}
