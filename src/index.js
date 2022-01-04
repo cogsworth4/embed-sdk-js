@@ -23,7 +23,9 @@ export class Cogsworth {
 
     // Call embed-api upsert-business endpoint
     const business = await axios.put("http://localhost:3000/api/businesses", {
-      headers: this.payloadEndpointHeaders,
+      headers: {
+        Authorization: `Bearer: ${this.payload.signature}`,
+      },
       body: {
         id: this.payload.business.id,
         name: this.payload.business.name,
@@ -41,7 +43,9 @@ export class Cogsworth {
 
     // Call embed-api upsert-user endpoint
     const response = await axios.put("http://localhost:3000/api/users", {
-      headers: this.payloadEndpointHeaders,
+      headers: {
+        Authorization: `Bearer: ${this.payload.signature}`,
+      },
       body: {
         id: this.payload.user.id,
         email: this.payload.user.email,
@@ -59,7 +63,9 @@ export class Cogsworth {
     }
 
     const response = await axios.put("http://localhost:3000/api/staffs", {
-      headers: this.payloadEndpointHeaders,
+      headers: {
+        Authorization: `Bearer: ${this.payload.signature}`,
+      },
       body: {
         id: this.payload.staff.id,
         email: this.payload.staff.email,
