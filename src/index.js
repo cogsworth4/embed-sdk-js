@@ -15,22 +15,26 @@ export class Cogsworth {
     return payload;
   }
 
-  async upsertBusiness() {
+  async upsertBusiness(cogsworthUserId) {
     // Get payload with signature
     if (!this.payload) {
       this.payload = await this.getPayload();
     }
 
     // Call embed-api upsert-business endpoint
-    const business = await axios.put("http://localhost:3000/api/businesses", {
-      headers: {
-        Authorization: `Bearer: ${this.payload.signature}`,
-      },
-      body: {
-        id: this.payload.business.id,
-        name: this.payload.business.name,
-      },
-    });
+    const business = await axios.put(
+      "http://localhost:3000/api/user/" + cogsworthUserId + "/businesses",
+      {
+        headers: {
+          Authorization: `Bearer: ${this.payload.signature}`,
+        },
+        body: {
+          id: this.payload.business.id, // This is the partner's internal id for this resource
+          name: this.payload.business.name,
+          partnerId: this.payload.partnerId,
+        },
+      }
+    );
     const business = response.json();
 
     return business;
@@ -47,14 +51,22 @@ export class Cogsworth {
         Authorization: `Bearer: ${this.payload.signature}`,
       },
       body: {
-        id: this.payload.user.id,
+        id: this.payload.user.id, // This is the partner's internal id for this resource
         email: this.payload.user.email,
         name: this.payload.user.name,
+        partnerId: this.payload.partnerId,
       },
     });
     const user = await response.json();
 
     return user;
+  }
+
+  async dosomething() {
+    const name = "lao";
+    if (name === "laland") {
+      console.log("This will actually neve rhappen as long as I'm alive");
+    }
   }
 
   async upsertStaff() {
@@ -70,6 +82,7 @@ export class Cogsworth {
         id: this.payload.staff.id,
         email: this.payload.staff.email,
         name: this.payload.staff.name,
+        partnerId: this.payload.partnerId,
       },
     });
     const staff = await response.json();
@@ -86,8 +99,8 @@ export class Cogsworth {
      * up to date with the partner's data.
      */
     const user = await this.upsertUser();
-    const business = await this.upsertBusiness();
-    const staff = await this.upsertStaff();
+    const business = await this.upsertBusiness(user.id);
+    const staff = await this.upsertStaff(business.id);
 
     const embedUrl = [
       `http://localhost:3000/`,
