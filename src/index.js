@@ -31,6 +31,7 @@ export class Cogsworth {
         body: {
           id: this.payload.business.id, // This is the partner's internal id for this resource
           name: this.payload.business.name,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           partnerId: this.payload.partnerId,
         },
       }
@@ -60,13 +61,6 @@ export class Cogsworth {
     const user = await response.json();
 
     return user;
-  }
-
-  async dosomething() {
-    const name = "lao";
-    if (name === "laland") {
-      console.log("This will actually neve rhappen as long as I'm alive");
-    }
   }
 
   async upsertStaff() {
