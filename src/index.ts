@@ -39,8 +39,9 @@ class CogsworthClient {
       {
         id: this.payload.business.id, // This is the partner's internal id for this resource
         name: this.payload.business.name,
-        timezone: this.payload.business.timezone,
         timestamp: this.payload.timestamp,
+        timezone: this.payload.business.timezone,
+        userRole: this.payload.business.userRole,
       },
       {
         headers: {
@@ -65,7 +66,6 @@ class CogsworthClient {
         id: this.payload.user.id, // This is the partner's internal id for this resource
         name: this.payload.user.name,
         email: this.payload.user.email,
-        role: this.payload.user.role,
         timestamp: this.payload.timestamp,
       },
       {
