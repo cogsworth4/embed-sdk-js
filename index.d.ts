@@ -5,7 +5,7 @@ export = CogsworthClient;
 declare class CogsworthClient {
   constructor({ payloadEndpoint }: { payloadEndpoint: PayloadEndpoint });
 
-  getEmbedUrl(): string;
+  init(containerId: string): void;
 }
 
 declare global {
