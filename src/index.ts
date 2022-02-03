@@ -115,6 +115,7 @@ class CogsworthClient {
         timestamp: this.payload.timestamp,
         timezone: this.payload.business.timezone,
         userRole: this.payload.business.userRole,
+        location: this.payload.business.location,
       },
       {
         headers: {
