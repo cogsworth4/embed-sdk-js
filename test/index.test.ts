@@ -1,7 +1,7 @@
-import { expect } from "@jest/globals";
+import { expect } from '@jest/globals'
 
-describe("Cogsworth", () => {
+describe('Cogsworth', () => {
   it('passes', () => {
     expect(true).toBe(true)
   })
-});
+})
