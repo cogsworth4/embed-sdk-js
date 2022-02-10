@@ -10,7 +10,7 @@ const getMainElement = ({ title, text, }) => {
     <p style="color: #5f6a7e; font-size: 1.25rem;">${text}</p>
   </div>
   `;
-    const style = 'padding: 2rem; border: 1px solid #e5e7eb; background: #fff;';
+    const style = 'padding: 2rem; border: 1px solid #e5e7eb; background: #fff; text-align: center;';
     element.setAttribute('style', style);
     return element;
 };
@@ -20,7 +20,7 @@ const getButton = ({ label, onClick, link, }) => {
         ? document.createElement('a')
         : document.createElement('button');
     element.innerText = label;
-    const style = 'display: block; background-color: #7fcacb; color: #fff; font-weight: 500; border: none; padding: 0.5em 1.5em; border-radius: 5px; margin: 1em auto 0 auto;';
+    const style = 'display: inline-block; background-color: #7fcacb; color: #fff; font-weight: 500; border: none; padding: 0.5em 1.5em; border-radius: 5px; margin-top: 1em;';
     element.setAttribute('style', style);
     if (link) {
         element.setAttribute('href', link);

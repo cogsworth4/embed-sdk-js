@@ -18,7 +18,7 @@ const authorize_1 = __importDefault(require("./screens/authorize"));
 const embed_app_1 = __importDefault(require("./screens/embed-app"));
 const ask_admin_1 = __importDefault(require("./screens/ask-admin"));
 const new_business_1 = __importDefault(require("./screens/new-business"));
-const COGSWORTH_API_BASE_PATH = 'http://localhost:3000/api';
+const EMBED_APP_URL = process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app';
 class CogsworthClient {
     constructor({ payloadEndpoint }) {
         this.payloadEndpoint = payloadEndpoint;
@@ -66,7 +66,7 @@ class CogsworthClient {
     }
     getUserStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield axios_1.default.get(`${COGSWORTH_API_BASE_PATH}/partner/${encodeURIComponent(this.payload.partnerId)}/user-status?userEmail=${encodeURIComponent(this.payload.user.email)}&businessId=${encodeURIComponent(this.payload.business.id)}`);
+            const response = yield axios_1.default.get(`${EMBED_APP_URL}/api/partner/${encodeURIComponent(this.payload.partnerId)}/user-status?userEmail=${encodeURIComponent(this.payload.user.email)}&businessId=${encodeURIComponent(this.payload.business.id)}`);
             return response.data.data;
         });
     }
@@ -93,7 +93,7 @@ class CogsworthClient {
     upsertBusiness(cogsworthUserId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Call embed-api upsert-business endpoint
-            const response = yield axios_1.default.put(`${COGSWORTH_API_BASE_PATH}/partner/${this.payload.partnerId}/users/${cogsworthUserId}/businesses`, {
+            const response = yield axios_1.default.put(`${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users/${cogsworthUserId}/businesses`, {
                 id: this.payload.business.id,
                 name: this.payload.business.name,
                 timestamp: this.payload.timestamp,
@@ -112,7 +112,7 @@ class CogsworthClient {
     upsertUser() {
         return __awaiter(this, void 0, void 0, function* () {
             // Call embed-api upsert-user endpoint
-            const response = yield axios_1.default.put(`${COGSWORTH_API_BASE_PATH}/partner/${this.payload.partnerId}/users`, {
+            const response = yield axios_1.default.put(`${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users`, {
                 id: this.payload.user.id,
                 name: this.payload.user.name,
                 email: this.payload.user.email,

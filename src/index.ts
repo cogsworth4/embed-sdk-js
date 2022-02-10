@@ -5,7 +5,8 @@ import renderEmbedApp from './screens/embed-app'
 import renderAskAdminScreen from './screens/ask-admin'
 import renderNewBusinessScreen from './screens/new-business'
 
-const COGSWORTH_API_BASE_PATH = 'http://localhost:3000/api'
+const EMBED_APP_URL =
+  process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app'
 
 export interface PayloadEndpoint {
   url: string
@@ -69,7 +70,7 @@ export default class CogsworthClient {
 
   private async getUserStatus() {
     const response = await axios.get(
-      `${COGSWORTH_API_BASE_PATH}/partner/${encodeURIComponent(
+      `${EMBED_APP_URL}/api/partner/${encodeURIComponent(
         this.payload.partnerId
       )}/user-status?userEmail=${encodeURIComponent(
         this.payload.user.email
@@ -105,7 +106,7 @@ export default class CogsworthClient {
   private async upsertBusiness(cogsworthUserId: string) {
     // Call embed-api upsert-business endpoint
     const response = await axios.put(
-      `${COGSWORTH_API_BASE_PATH}/partner/${this.payload.partnerId}/users/${cogsworthUserId}/businesses`,
+      `${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users/${cogsworthUserId}/businesses`,
       {
         id: this.payload.business.id, // This is the partner's internal id for this resource
         name: this.payload.business.name,
@@ -128,7 +129,7 @@ export default class CogsworthClient {
   private async upsertUser() {
     // Call embed-api upsert-user endpoint
     const response = await axios.put(
-      `${COGSWORTH_API_BASE_PATH}/partner/${this.payload.partnerId}/users`,
+      `${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users`,
       {
         id: this.payload.user.id, // This is the partner's internal id for this resource
         name: this.payload.user.name,
