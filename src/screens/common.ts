@@ -22,15 +22,21 @@ export const getMainElement = ({
 export const getButton = ({
   label,
   onClick,
+  link,
 }: {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  link?: string
 }) => {
-  const element = document.createElement("button");
+  const element = link ? document.createElement("a") : document.createElement("button");
   element.innerText = label;
   const style =
     "display: block; background-color: #7fcacb; color: #fff; font-weight: 500; border: none; padding: 0.5em 1.5em; border-radius: 5px; margin: 1em auto 0 auto;";
   element.setAttribute("style", style);
+  if (link) {
+    element.setAttribute('href', link)
+    element.setAttribute('target', "_blank")
+  }
   if (onClick) {
     element.addEventListener("click", onClick);
   }
