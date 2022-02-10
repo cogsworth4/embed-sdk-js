@@ -1,12 +1,16 @@
 {
-  "name": "embed-sdk-js",
+  "name": "@cogsworth4/embed-sdk-js",
   "version": "1.0.0",
   "description": "A client side SDK for integrating Cogsworth's Embed Widget",
   "main": "dist/src/index.js",
   "author": "Cogsworth <dev@cogsworth.com>",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "release": "npm run build && npm publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",

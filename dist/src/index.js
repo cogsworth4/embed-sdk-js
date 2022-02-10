@@ -18,7 +18,7 @@ const authorize_1 = __importDefault(require("./screens/authorize"));
 const embed_app_1 = __importDefault(require("./screens/embed-app"));
 const ask_admin_1 = __importDefault(require("./screens/ask-admin"));
 const new_business_1 = __importDefault(require("./screens/new-business"));
-const COGSWORTH_API_BASE_PATH = "http://localhost:3000/api";
+const COGSWORTH_API_BASE_PATH = 'http://localhost:3000/api';
 class CogsworthClient {
     constructor({ payloadEndpoint }) {
         this.payloadEndpoint = payloadEndpoint;
@@ -32,24 +32,24 @@ class CogsworthClient {
                 return;
             }
             const { user, business } = yield this.getUserStatus();
-            if (user === "UNAUTHORIZED" || business === "UNAUTHORIZED") {
+            if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
                 return (0, authorize_1.default)(element);
             }
             const role = this.payload.business.userRole;
             // When business exists already, we can always prompt the user to sign up
-            if (user === "NOT_FOUND" && business === "CREATED") {
+            if (user === 'NOT_FOUND' && business === 'CREATED') {
                 return (0, signup_1.default)(element, () => this.embedApp(element));
             }
             // Only owners can be prompted sign up to create a new business;
             // other roles are prompted to ask an admin to sign up first
-            if (user === "NOT_FOUND" && business === "NOT_FOUND") {
-                return role === "OWNER"
+            if (user === 'NOT_FOUND' && business === 'NOT_FOUND') {
+                return role === 'OWNER'
                     ? (0, signup_1.default)(element, () => this.embedApp(element))
                     : (0, ask_admin_1.default)(element);
             }
             // If user exists already, we render the new business screen instead
-            if (user === "CREATED" && business === "NOT_FOUND") {
-                return role === "OWNER"
+            if (user === 'CREATED' && business === 'NOT_FOUND') {
+                return role === 'OWNER'
                     ? (0, new_business_1.default)(element, () => this.embedApp(element))
                     : (0, ask_admin_1.default)(element);
             }
@@ -85,7 +85,7 @@ class CogsworthClient {
     getPayload() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield axios_1.default.get(this.payloadEndpoint.url, {
-                headers: Object.assign({ "Content-Type": "application/json" }, (this.payloadEndpoint.headers || {})),
+                headers: Object.assign({ 'Content-Type': 'application/json' }, (this.payloadEndpoint.headers || {})),
             });
             return response.data;
         });
@@ -103,7 +103,7 @@ class CogsworthClient {
             }, {
                 headers: {
                     Authorization: `Bearer: ${this.payload.business.signature}`,
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
             });
             return response.data;
@@ -120,7 +120,7 @@ class CogsworthClient {
             }, {
                 headers: {
                     Authorization: `Bearer: ${this.payload.user.signature}`,
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
             });
             return response.data;
