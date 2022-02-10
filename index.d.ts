@@ -7,9 +7,10 @@ declare class CogsworthClient {
 
   init(containerId: string): void;
 }
-
+/*
 declare global {
   interface Window {
-    CogsworthClient: any;
+    CogsworthClient: CogsworthClient;
   }
 }
+*/

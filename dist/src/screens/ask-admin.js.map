@@ -1,0 +1,1 @@
+{"version":3,"file":"ask-admin.js","sourceRoot":"","sources":["../../../src/screens/ask-admin.ts"],"names":[],"mappings":";;AAAA,qCAA0C;AAE1C,kBAAe,CAAC,SAAsB,EAAE,EAAE;IACxC,MAAM,OAAO,GAAG,IAAA,uBAAc,EAAC;QAC7B,KAAK,EAAE,0CAA0C;QACjD,IAAI,EAAE,sGAAsG;KAC7G,CAAC,CAAC;IACH,SAAS,CAAC,SAAS,GAAG,EAAE,CAAC;IACzB,SAAS,CAAC,MAAM,CAAC,OAAO,CAAC,CAAC;AAC5B,CAAC,CAAC"}

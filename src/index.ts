@@ -12,7 +12,7 @@ export interface PayloadEndpoint {
   headers: AxiosRequestHeaders;
 }
 
-class CogsworthClient {
+export default class CogsworthClient {
   private payload: any;
   private payloadEndpoint: PayloadEndpoint;
 
@@ -32,11 +32,8 @@ class CogsworthClient {
     }
 
     const { user, business } = await this.getUserStatus();
-    console.log(user, business);
     if (user === "UNAUTHORIZED" || business === "UNAUTHORIZED") {
-      return renderAuthorizeScreen(element, () => {
-        window.open("https://www.cogsworth.com/account/", "_blank").focus();
-      });
+      return renderAuthorizeScreen(element);
     }
 
     const role = this.payload.business.userRole;
@@ -74,12 +71,12 @@ class CogsworthClient {
     const response = await axios.get(
       `${COGSWORTH_API_BASE_PATH}/partner/${encodeURIComponent(
         this.payload.partnerId
-      )}/userStatus?userEmail=${encodeURIComponent(
+      )}/user-status?userEmail=${encodeURIComponent(
         this.payload.user.email
       )}&businessId=${encodeURIComponent(this.payload.business.id)}`
     );
 
-    return response.data as { user: string; business: string };
+    return response.data.data as { user: string; business: string };
   }
 
   private async getEmbedUrl(): Promise<string> {
@@ -89,9 +86,9 @@ class CogsworthClient {
      * up to date with the partner's data.
      */
     const user = await this.upsertUser();
-    const business = await this.upsertBusiness(user.id);
+    const business = await this.upsertBusiness(user.data.id);
 
-    return business.embedUrl;
+    return business.data.embedUrl;
   }
 
   private async getPayload() {
@@ -149,5 +146,3 @@ class CogsworthClient {
     return response.data;
   }
 }
-
-window.CogsworthClient = CogsworthClient;
