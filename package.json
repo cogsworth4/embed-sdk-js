@@ -1,6 +1,6 @@
 {
   "name": "@cogsworth4/embed-sdk-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A client side SDK for integrating Cogsworth's Embed Widget",
   "main": "dist/src/index.js",
   "author": "Cogsworth <dev@cogsworth.com>",

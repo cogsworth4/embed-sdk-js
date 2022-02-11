@@ -4,6 +4,7 @@ import renderAuthorizeScreen from './screens/authorize'
 import renderEmbedApp from './screens/embed-app'
 import renderAskAdminScreen from './screens/ask-admin'
 import renderNewBusinessScreen from './screens/new-business'
+import renderLoadingScreen from './screens/loading'
 
 const EMBED_APP_URL =
   process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app'
@@ -31,6 +32,8 @@ export default class CogsworthClient {
       )
       return
     }
+
+    renderLoadingScreen(element)
 
     const { user, business } = await this.getUserStatus()
     if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
@@ -64,6 +67,7 @@ export default class CogsworthClient {
   }
 
   private async embedApp(element: HTMLElement) {
+    renderLoadingScreen(element)
     const embedUrl = await this.getEmbedUrl()
     renderEmbedApp(element, embedUrl)
   }

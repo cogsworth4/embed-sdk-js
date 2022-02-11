@@ -18,6 +18,7 @@ const authorize_1 = __importDefault(require("./screens/authorize"));
 const embed_app_1 = __importDefault(require("./screens/embed-app"));
 const ask_admin_1 = __importDefault(require("./screens/ask-admin"));
 const new_business_1 = __importDefault(require("./screens/new-business"));
+const loading_1 = __importDefault(require("./screens/loading"));
 const EMBED_APP_URL = process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app';
 class CogsworthClient {
     constructor({ payloadEndpoint }) {
@@ -31,6 +32,7 @@ class CogsworthClient {
                 console.error(`Cogsworth Embed App: Element with ID ${elementId} not found`);
                 return;
             }
+            (0, loading_1.default)(element);
             const { user, business } = yield this.getUserStatus();
             if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
                 return (0, authorize_1.default)(element);
@@ -60,6 +62,7 @@ class CogsworthClient {
     }
     embedApp(element) {
         return __awaiter(this, void 0, void 0, function* () {
+            (0, loading_1.default)(element);
             const embedUrl = yield this.getEmbedUrl();
             (0, embed_app_1.default)(element, embedUrl);
         });
