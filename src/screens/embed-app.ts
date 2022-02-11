@@ -8,7 +8,9 @@ export default (container: HTMLElement, embedUrl: string) => {
   container.append(element)
   element.onload = (e) => {
     const loadingElement = document.getElementById('cogsworth-loading')
-    loadingElement.remove()
+    if (loadingElement) {
+      loadingElement.remove()
+    }
     element.setAttribute(
       'style',
       'width: 100%; min-height: 300px; height: 100%; display: block;'
