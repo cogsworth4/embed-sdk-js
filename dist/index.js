@@ -131,4 +131,5 @@ class CogsworthClient {
     }
 }
 exports.default = CogsworthClient;
+window['CogsworthClient'] = CogsworthClient;
 //# sourceMappingURL=index.js.map
