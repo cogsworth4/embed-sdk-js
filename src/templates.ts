@@ -53,7 +53,7 @@ export const STYLES = `
     font-size: 1.25rem;
   }
 
-  .${CLASSES.CONTAINER} button {
+  .${CLASSES.CONTAINER} button, .${CLASSES.CONTAINER} a {
     display: inline-block;
     background-color: #7fcacb;
     color: #fff;
