@@ -2,8 +2,6 @@ export const addButtonEventListener = (
   container: HTMLElement,
   onClick: () => void
 ) => {
-  if (!onClick) return
-
   const button = container.getElementsByTagName('button')
   if (button && button.length > 0) {
     button[0].addEventListener('click', onClick)
@@ -23,7 +21,9 @@ export const renderIntoContainer = (
   { onClick }: { onClick?: () => void } = {}
 ) => {
   container.innerHTML = html
-  addButtonEventListener(container, onClick)
+  if (onClick) {
+    addButtonEventListener(container, onClick)
+  }
 }
 
 export const appendStyles = (styles: string) => {

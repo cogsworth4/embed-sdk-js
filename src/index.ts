@@ -12,7 +12,7 @@ export interface PayloadEndpoint {
 export default class CogsworthClient {
   private payload: any
   private payloadEndpoint: PayloadEndpoint
-  private container: HTMLElement
+  private container: HTMLElement | null = null
 
   constructor({
     payloadEndpoint,
@@ -86,6 +86,10 @@ export default class CogsworthClient {
   }
 
   private async embedApp() {
+    if (!this.container) {
+      return
+    }
+
     renderIntoContainer(this.container, TEMPLATES.LOADING)
 
     // Create the iframe element and hide it
