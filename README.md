@@ -33,32 +33,6 @@ Once instantiated, you can call the `init()` method to render the Cogsworth embe
 client.init()
 ```
 
-## Full example
-
-```html
-<html>
-  <head>
-    <script type="text/javascript" src="http://embed-app.cogsworth.com/client.js"></script>
-  </head>
-  <body>
-    <div id="cogsworth-container">
-    <script type="text/javascript">
-      // 1. Instantiate the Cogsworth Client by indicating the payload endpoint url and optional headers.
-      const client = new CogsworthClient({
-        payloadEndpoint: {
-          url: `http://partner.com/api/cogsworth-payload?userId=${userId}&clinicId=${clinicId}`,
-          headers: {},
-        },
-        containerSelector: '#cogsworth-widget',
-      });
-
-      // 2. Initialize the cogsworth embed application
-      client.init()
-    </script>
-  </body>
-</html>
-```
-
 ## Full example (React)
 
 ```javascript
