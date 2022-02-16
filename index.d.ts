@@ -1,11 +1,17 @@
-import { PayloadEndpoint } from "./src/index";
+import { PayloadEndpoint } from './src/index'
 
-export = CogsworthClient;
+export = CogsworthClient
 
 declare class CogsworthClient {
-  constructor({ payloadEndpoint }: { payloadEndpoint: PayloadEndpoint });
+  constructor({
+    payloadEndpoint,
+    containerSelector,
+  }: {
+    payloadEndpoint: PayloadEndpoint
+    containerSelector: string
+  })
 
-  init(containerId: string): void;
+  init(containerId: string): void
 }
 /*
 declare global {

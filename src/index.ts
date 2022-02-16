@@ -1,10 +1,6 @@
 import axios, { AxiosRequestHeaders } from 'axios'
-import renderSignupScreen from './screens/signup'
-import renderAuthorizeScreen from './screens/authorize'
-import renderEmbedApp from './screens/embed-app'
-import renderAskAdminScreen from './screens/ask-admin'
-import renderNewBusinessScreen from './screens/new-business'
-import renderLoadingScreen from './screens/loading'
+import { appendStyles, removeElement, renderIntoContainer } from './utils'
+import TEMPLATES, { CLASSES, STYLES } from './templates'
 
 const EMBED_APP_URL =
   process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app'
@@ -17,59 +13,95 @@ export interface PayloadEndpoint {
 export default class CogsworthClient {
   private payload: any
   private payloadEndpoint: PayloadEndpoint
+  private container: HTMLElement
 
-  constructor({ payloadEndpoint }: { payloadEndpoint: PayloadEndpoint }) {
+  constructor({
+    payloadEndpoint,
+    containerSelector,
+  }: {
+    payloadEndpoint: PayloadEndpoint
+    containerSelector: string
+  }) {
     this.payloadEndpoint = payloadEndpoint
-  }
 
-  async init(elementId: string) {
-    this.payload = await this.getPayload()
-
-    const element = document.getElementById(elementId)
-    if (!element) {
+    const container = document.querySelector(containerSelector)
+    if (!container) {
       console.error(
-        `Cogsworth Embed App: Element with ID ${elementId} not found`
+        `Could not load Cogsworth widget: Element with selector ${containerSelector} not found`
       )
       return
     }
 
-    renderLoadingScreen(element)
+    this.container = container as HTMLElement
+  }
+
+  async init() {
+    if (!this.container) {
+      return
+    }
+
+    this.payload = await this.getPayload()
+
+    appendStyles(STYLES)
+    renderIntoContainer(this.container, TEMPLATES.LOADING)
 
     const { user, business } = await this.getUserStatus()
     if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
-      return renderAuthorizeScreen(element)
+      renderIntoContainer(this.container, TEMPLATES.AUTHORIZE)
     }
 
     const role = this.payload.business.userRole
 
     // When business exists already, we can always prompt the user to sign up
     if (user === 'NOT_FOUND' && business === 'CREATED') {
-      return renderSignupScreen(element, () => this.embedApp(element))
+      return renderIntoContainer(this.container, TEMPLATES.SIGNUP, {
+        onClick: () => this.embedApp(),
+      })
     }
 
     // Only owners can be prompted sign up to create a new business;
     // other roles are prompted to ask an admin to sign up first
     if (user === 'NOT_FOUND' && business === 'NOT_FOUND') {
-      return role === 'OWNER'
-        ? renderSignupScreen(element, () => this.embedApp(element))
-        : renderAskAdminScreen(element)
+      if (role === 'OWNER') {
+        return renderIntoContainer(this.container, TEMPLATES.SIGNUP, {
+          onClick: () => this.embedApp(),
+        })
+      } else {
+        return renderIntoContainer(this.container, TEMPLATES.ASK_ADMIN)
+      }
     }
     // If user exists already, we render the new business screen instead
     if (user === 'CREATED' && business === 'NOT_FOUND') {
-      return role === 'OWNER'
-        ? renderNewBusinessScreen(element, () => this.embedApp(element))
-        : renderAskAdminScreen(element)
+      if (role === 'OWNER') {
+        return renderIntoContainer(this.container, TEMPLATES.NEW_BUSINESS, {
+          onClick: () => this.embedApp(),
+        })
+      } else {
+        return renderIntoContainer(this.container, TEMPLATES.ASK_ADMIN)
+      }
     }
 
     // Only possible scenario left is that both the business and user already exist
     // We can safely render the embed app now
-    return this.embedApp(element)
+    return this.embedApp()
   }
 
-  private async embedApp(element: HTMLElement) {
-    renderLoadingScreen(element)
+  private async embedApp() {
+    renderIntoContainer(this.container, TEMPLATES.LOADING)
+
+    // Create the iframe element and hide it
     const embedUrl = await this.getEmbedUrl()
-    renderEmbedApp(element, embedUrl)
+    const iframe = document.createElement('iframe')
+    iframe.setAttribute('class', CLASSES.IFRAME)
+    iframe.setAttribute('style', 'display: none;')
+    iframe.setAttribute('src', embedUrl)
+    this.container.append(iframe)
+
+    // Once the app has loaded, we can display the iframe
+    iframe.onload = (e) => {
+      removeElement(`.${CLASSES.LOADING}`)
+      iframe.removeAttribute('style')
+    }
   }
 
   private async getUserStatus() {

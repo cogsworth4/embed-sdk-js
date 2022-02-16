@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,58 +32,81 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
-const signup_1 = __importDefault(require("./screens/signup"));
-const authorize_1 = __importDefault(require("./screens/authorize"));
-const embed_app_1 = __importDefault(require("./screens/embed-app"));
-const ask_admin_1 = __importDefault(require("./screens/ask-admin"));
-const new_business_1 = __importDefault(require("./screens/new-business"));
-const loading_1 = __importDefault(require("./screens/loading"));
+const utils_1 = require("./utils");
+const templates_1 = __importStar(require("./templates"));
 const EMBED_APP_URL = process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app';
 class CogsworthClient {
-    constructor({ payloadEndpoint }) {
+    constructor({ payloadEndpoint, containerSelector, }) {
         this.payloadEndpoint = payloadEndpoint;
+        const container = document.querySelector(containerSelector);
+        if (!container) {
+            console.error(`Could not load Cogsworth widget: Element with selector ${containerSelector} not found`);
+            return;
+        }
+        this.container = container;
     }
-    init(elementId) {
+    init() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.payload = yield this.getPayload();
-            const element = document.getElementById(elementId);
-            if (!element) {
-                console.error(`Cogsworth Embed App: Element with ID ${elementId} not found`);
+            if (!this.container) {
                 return;
             }
-            (0, loading_1.default)(element);
+            this.payload = yield this.getPayload();
+            (0, utils_1.appendStyles)(templates_1.STYLES);
+            (0, utils_1.renderIntoContainer)(this.container, templates_1.default.LOADING);
             const { user, business } = yield this.getUserStatus();
             if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
-                return (0, authorize_1.default)(element);
+                (0, utils_1.renderIntoContainer)(this.container, templates_1.default.AUTHORIZE);
             }
             const role = this.payload.business.userRole;
             // When business exists already, we can always prompt the user to sign up
             if (user === 'NOT_FOUND' && business === 'CREATED') {
-                return (0, signup_1.default)(element, () => this.embedApp(element));
+                return (0, utils_1.renderIntoContainer)(this.container, templates_1.default.SIGNUP, {
+                    onClick: () => this.embedApp(),
+                });
             }
             // Only owners can be prompted sign up to create a new business;
             // other roles are prompted to ask an admin to sign up first
             if (user === 'NOT_FOUND' && business === 'NOT_FOUND') {
-                return role === 'OWNER'
-                    ? (0, signup_1.default)(element, () => this.embedApp(element))
-                    : (0, ask_admin_1.default)(element);
+                if (role === 'OWNER') {
+                    return (0, utils_1.renderIntoContainer)(this.container, templates_1.default.SIGNUP, {
+                        onClick: () => this.embedApp(),
+                    });
+                }
+                else {
+                    return (0, utils_1.renderIntoContainer)(this.container, templates_1.default.ASK_ADMIN);
+                }
             }
             // If user exists already, we render the new business screen instead
             if (user === 'CREATED' && business === 'NOT_FOUND') {
-                return role === 'OWNER'
-                    ? (0, new_business_1.default)(element, () => this.embedApp(element))
-                    : (0, ask_admin_1.default)(element);
+                if (role === 'OWNER') {
+                    return (0, utils_1.renderIntoContainer)(this.container, templates_1.default.NEW_BUSINESS, {
+                        onClick: () => this.embedApp(),
+                    });
+                }
+                else {
+                    return (0, utils_1.renderIntoContainer)(this.container, templates_1.default.ASK_ADMIN);
+                }
             }
             // Only possible scenario left is that both the business and user already exist
             // We can safely render the embed app now
-            return this.embedApp(element);
+            return this.embedApp();
         });
     }
-    embedApp(element) {
+    embedApp() {
         return __awaiter(this, void 0, void 0, function* () {
-            (0, loading_1.default)(element);
+            (0, utils_1.renderIntoContainer)(this.container, templates_1.default.LOADING);
+            // Create the iframe element and hide it
             const embedUrl = yield this.getEmbedUrl();
-            (0, embed_app_1.default)(element, embedUrl);
+            const iframe = document.createElement('iframe');
+            iframe.setAttribute('class', templates_1.CLASSES.IFRAME);
+            iframe.setAttribute('style', 'display: none;');
+            iframe.setAttribute('src', embedUrl);
+            this.container.append(iframe);
+            // Once the app has loaded, we can display the iframe
+            iframe.onload = (e) => {
+                (0, utils_1.removeElement)(`.${templates_1.CLASSES.LOADING}`);
+                iframe.removeAttribute('style');
+            };
         });
     }
     getUserStatus() {
@@ -131,5 +173,4 @@ class CogsworthClient {
     }
 }
 exports.default = CogsworthClient;
-window['CogsworthClient'] = CogsworthClient;
 //# sourceMappingURL=index.js.map
