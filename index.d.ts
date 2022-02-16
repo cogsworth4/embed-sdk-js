@@ -11,7 +11,7 @@ declare class CogsworthClient {
     containerSelector: string
   })
 
-  init(containerId: string): void
+  init(): void
 }
 /*
 declare global {
