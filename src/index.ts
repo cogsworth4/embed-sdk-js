@@ -1,4 +1,3 @@
-import axios, { AxiosRequestHeaders } from 'axios'
 import { appendStyles, removeElement, renderIntoContainer } from './utils'
 import TEMPLATES, { CLASSES, STYLES } from './templates'
 
@@ -7,7 +6,7 @@ const EMBED_APP_URL =
 
 export interface PayloadEndpoint {
   url: string
-  headers: AxiosRequestHeaders
+  headers: HeadersInit
 }
 
 export default class CogsworthClient {
@@ -105,15 +104,18 @@ export default class CogsworthClient {
   }
 
   private async getUserStatus() {
-    const response = await axios.get(
+    const response = await fetch(
       `${EMBED_APP_URL}/api/partner/${encodeURIComponent(
         this.payload.partnerId
       )}/user-status?userEmail=${encodeURIComponent(
         this.payload.user.email
-      )}&businessId=${encodeURIComponent(this.payload.business.id)}`
-    )
+      )}&businessId=${encodeURIComponent(this.payload.business.id)}`,
+      {
+        method: 'GET',
+      }
+    ).then((r) => r.json())
 
-    return response.data.data as { user: string; business: string }
+    return response.data as { user: string; business: string }
   }
 
   private async getEmbedUrl(): Promise<string> {
@@ -123,62 +125,63 @@ export default class CogsworthClient {
      * up to date with the partner's data.
      */
     const user = await this.upsertUser()
-    const business = await this.upsertBusiness(user.data.id)
+    const business = await this.upsertBusiness(user.id)
 
-    return business.data.embedUrl
+    return business.embedUrl
   }
 
-  private async getPayload() {
-    const response = await axios.get(this.payloadEndpoint.url, {
+  private getPayload() {
+    return fetch(this.payloadEndpoint.url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         ...(this.payloadEndpoint.headers || {}),
       },
-    })
-
-    return response.data
+    }).then((r) => r.json())
   }
 
   private async upsertBusiness(cogsworthUserId: string) {
     // Call embed-api upsert-business endpoint
-    const response = await axios.put(
+    const response = await fetch(
       `${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users/${cogsworthUserId}/businesses`,
       {
-        id: this.payload.business.id, // This is the partner's internal id for this resource
-        name: this.payload.business.name,
-        timestamp: this.payload.timestamp,
-        timezone: this.payload.business.timezone,
-        userRole: this.payload.business.userRole,
-        location: this.payload.business.location,
-      },
-      {
+        method: 'PUT',
+        body: JSON.stringify({
+          id: this.payload.business.id, // This is the partner's internal id for this resource
+          name: this.payload.business.name,
+          timestamp: this.payload.timestamp,
+          timezone: this.payload.business.timezone,
+          userRole: this.payload.business.userRole,
+          location: this.payload.business.location,
+        }),
         headers: {
           Authorization: `Bearer: ${this.payload.business.signature}`,
           'Content-Type': 'application/json',
         },
       }
-    )
+    ).then((r) => r.json())
 
     return response.data
   }
 
   private async upsertUser() {
     // Call embed-api upsert-user endpoint
-    const response = await axios.put(
+    const response = await fetch(
       `${EMBED_APP_URL}/api/partner/${this.payload.partnerId}/users`,
       {
-        id: this.payload.user.id, // This is the partner's internal id for this resource
-        name: this.payload.user.name,
-        email: this.payload.user.email,
-        timestamp: this.payload.timestamp,
-      },
-      {
+        method: 'PUT',
+        body: JSON.stringify({
+          id: this.payload.user.id, // This is the partner's internal id for this resource
+          name: this.payload.user.name,
+          email: this.payload.user.email,
+          timestamp: this.payload.timestamp,
+        }),
         headers: {
           Authorization: `Bearer: ${this.payload.user.signature}`,
           'Content-Type': 'application/json',
         },
       }
-    )
+    ).then((r) => r.json())
 
     return response.data
   }
