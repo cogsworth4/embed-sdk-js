@@ -47,7 +47,7 @@ export default class CogsworthClient {
 
     const { user, business } = await this.getUserStatus()
     if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
-      renderIntoContainer(this.container, TEMPLATES.AUTHORIZE)
+      return renderIntoContainer(this.container, TEMPLATES.AUTHORIZE)
     }
 
     const role = this.payload.business.userRole
