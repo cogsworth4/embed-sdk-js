@@ -5,9 +5,9 @@ The Cogsworth Embed App SDK allows Cogsworth partners to embed the Cogsworth Emb
 ## Installation
 
 ```bash
-npm install @cogsworth4/embed-sdk-js
+npm install @cogsworthdev/embed-sdk-js
 # or
-yarn add @cogsworth4/embed-sdk-js
+yarn add @cogsworthdev/embed-sdk-js
 ```
 
 ## Usage
