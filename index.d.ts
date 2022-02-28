@@ -4,9 +4,11 @@ export = CogsworthClient
 
 declare class CogsworthClient {
   constructor({
+    partnerId,
     payloadEndpoint,
     containerSelector,
   }: {
+    partnerId: string
     payloadEndpoint: PayloadEndpoint
     containerSelector: string
   })

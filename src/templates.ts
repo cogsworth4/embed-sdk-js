@@ -22,10 +22,14 @@ export const NEW_BUSINESS = `<div class="${CLASSES.CONTAINER}">
   <button>Add business</button>
 </div>`
 
-export const AUTHORIZE = `<div class="${CLASSES.CONTAINER}">
+export const AUTHORIZE = (partnerId: string) => `<div class="${
+  CLASSES.CONTAINER
+}">
   <h2>Link your Cogsworth account</h2>
   <p>Authorize this site in your Cogsworth dashboard to show your calendar right here.</p>
-  <a href="https://www.cogsworth.com/account/" target="_blank">Authorize</a>
+  <a href="${
+    process.env.NEXT_PUBLIC_COGSWORTH_SITE_URL || 'https://www.cogsworth.com'
+  }/account/authorize/${partnerId}" target="_blank">Authorize</a>
 </div>`
 
 export const LOADING = `<div class="${CLASSES.LOADING}">

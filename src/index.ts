@@ -10,17 +10,21 @@ export interface PayloadEndpoint {
 }
 
 export default class CogsworthClient {
+  private partnerId: string
   private payload: any
   private payloadEndpoint: PayloadEndpoint
   private container: HTMLElement | null = null
 
   constructor({
+    partnerId,
     payloadEndpoint,
     containerSelector,
   }: {
+    partnerId: string
     payloadEndpoint: PayloadEndpoint
     containerSelector: string
   }) {
+    this.partnerId = partnerId
     this.payloadEndpoint = payloadEndpoint
 
     const container = document.querySelector(containerSelector)
@@ -46,7 +50,10 @@ export default class CogsworthClient {
 
     const { user, business } = await this.getUserStatus()
     if (user === 'UNAUTHORIZED' || business === 'UNAUTHORIZED') {
-      return renderIntoContainer(this.container, TEMPLATES.AUTHORIZE)
+      return renderIntoContainer(
+        this.container,
+        TEMPLATES.AUTHORIZE(this.partnerId)
+      )
     }
 
     const role = this.payload.business.userRole
