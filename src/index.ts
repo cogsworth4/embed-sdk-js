@@ -2,7 +2,8 @@ import { appendStyles, removeElement, renderIntoContainer } from './utils'
 import TEMPLATES, { CLASSES, STYLES } from './templates'
 
 const EMBED_APP_URL =
-  process.env.NEXT_PUBLIC_EMBED_APP_URL || 'https://embed-app.vercel.app'
+  process.env.NEXT_PUBLIC_EMBED_APP_URL ||
+  'https://embed-app-cogsworth.vercel.app'
 
 export interface PayloadEndpoint {
   url: string
